@@ -62,6 +62,24 @@ def expect_output(name, expected, *params):
         return None
     return run_test
 
+def expect_output_func(name, tester, expected):
+    """
+    Create a test callable that calls the tester function
+    and compares the result to expected.
+
+    Returns a callable(func) -> None | error_message
+    """
+    def run_test(func):
+        try:
+            result = tester(func)
+        except Exception as e:
+            return f"Test '{name}' raised an exception: {e}"
+
+        if result != expected:
+            return f"Test '{name}' failed: expected {expected}, got {result}"
+        return None
+    return run_test
+
 def is_recursive_test(expected=True):
     """
     Checks if the function is directly recursive.
