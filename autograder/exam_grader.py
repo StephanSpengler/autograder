@@ -106,9 +106,14 @@ def _load_student(i, student, submissions_root, submission_file, tasks, scores, 
 
     def _set_score(task_id, value, entry):
         nonlocal changed
-        changed = True
+        if value.strip() == "":
+            if task_id in scores:
+                del scores[task_id]
+                changed = True
+            return
         try:
             scores[task_id] = float(value)
+            changed = True
             entry.delete(0, tk.END)
             entry.insert(0, str(value))
         except ValueError:
