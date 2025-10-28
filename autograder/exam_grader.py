@@ -19,6 +19,7 @@ def init(submissions_root: str, output_path: str, submission_file: str, tasks: l
     
     labels = [task_id for task_id, *_ in tasks]
     def load(i):
+        i = i % len(students)
         student = students[i]
         _load_student(
             i,
