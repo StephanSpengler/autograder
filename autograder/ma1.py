@@ -57,8 +57,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     submissions_root = sys.argv[1]
-    output_path = "ma1.csv"
-    submission_file = "ma1.py"
+    output_path = "m1.csv"
+    submission_file = "m1.py"
     tasks: list[Task] = [
         ("A1", test_A1, [0.0, 0.2, 0.5, 0.8, 1.0]),
         ("A2", test_A2, [0.0, 0.2, 0.5, 0.8, 1.0]),
