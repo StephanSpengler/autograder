@@ -2,15 +2,41 @@ import ast
 import inspect
 
 #
-# Grading presets
+# Grading presets and helper functions
 #
 
 presetA = [0.0, 0.2, 0.5, 0.8, 1.0]
 presetB = [0.0, 0.5, 1.0, 1.5, 2.0]
 
+def load_func(module, func_name):
+    """
+    Load a function from a module, or return None if not found.
+    """
+    if not hasattr(module, func_name):
+        raise AttributeError(f"Function '{func_name}' is not defined.")
+    return getattr(module, func_name)
+
+def truncate100(text):
+    """
+    Truncate text to 100 characters for display.
+    """
+    return text if len(text) <= 100 else text[:100] + '...'
+
+def collect_failed(failed):
+    if not failed:
+        return "All tests passed."
+
+    messages = []
+    for i, msg in enumerate(failed):
+        if i > 10:
+            messages.append(f"... and {len(failed) - 10} more failures.")
+            break
+        messages.append(msg)
+    return "\n".join(messages)
+
 #
 # Main test runner
-# 
+#
 
 def run_function_tests(module, func_name, tests):
     """
@@ -22,27 +48,19 @@ def run_function_tests(module, func_name, tests):
         tests: list of callables, each taking the function as argument
                and returning None (success) or an error message (failure)
     """
-    if not hasattr(module, func_name):
-        return f"Function '{func_name}' is not defined."
-    
-    func = getattr(module, func_name)
+    try:
+        func = load_func(module, func_name)
+    except AttributeError as e:
+        return str(e)
+
     failed = []
 
     for test_fn in tests:
         msg = test_fn(func)
         if msg is not None:
             failed.append(msg)
-
-    if not failed:
-        return "All tests passed."
     
-    messages = []
-    for i, msg in enumerate(failed):
-        if i > 10:
-            messages.append(f"... and {len(failed) - 10} more failures.")
-            break
-        messages.append(msg)
-    return "\n".join(messages)
+    return collect_failed(failed)
 
 #
 # Test utility functions
@@ -163,13 +181,3 @@ def uses_HOF_test(count=1):
             return f"Test 'HOF_check' failed: expected at least {count} higher-order usage(s), found {hof_count}"
 
     return test
-
-#
-# Helper functions
-#
-
-def truncate100(text):
-    """
-    Truncate text to 100 characters for display.
-    """
-    return text if len(text) <= 100 else text[:100] + '...'

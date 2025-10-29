@@ -69,12 +69,16 @@ def fib(n, memory):
         memory[n] = fib(n - 1, memory) + fib(n - 2, memory)
     return memory[n]
 
+def sqrt(x):
+    if x < 0:
+        raise RuntimeError(f'Illegal argument to sqrt: {x}')
+    return math.sqrt(x)
 
 FUNCTIONS_1 = {  # Functions with a single argument
     'sin': math.sin,
     'cos': math.cos,
     'exp': math.exp,
-    'sqrt': math.sqrt,
+    'sqrt': sqrt,
     'log': log,
     'fib': lambda n: fib(n, memory)
 }
@@ -256,8 +260,6 @@ def main():
         wtok = TokenizeWrapper(line)
         if wtok.get_current() == 'vars':
             vars_print(variables)
-        if wtok.get_current() == 'mem':
-            memory_print(memory)
         elif wtok.get_current() == 'quit':
             print('Bye')
             exit()
