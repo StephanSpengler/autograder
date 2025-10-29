@@ -141,6 +141,8 @@ def test_B4(module):
         ("age", "*** Syntax error:"), # messsage may vary
         ("age(", "*** Syntax error:"), # messsage may vary
         ("age(5)", "*** Syntax error:"), # messsage may vary
+        ("age()", ""),
+        ("y", "*** Syntax error:"), # message may vary
     ])
 
 #

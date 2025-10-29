@@ -194,10 +194,8 @@ def factor(wtok, variables):
             line = input(f'\nIs your age less than {m}?: ')
             if line == 'yes':
                 ub = m - 1
-            elif line == 'no':
-                lb = m
             else:
-                raise SyntaxError("Unexpected answer")
+                lb = m
         result = lb
     elif wtok.get_current() in FUNCTIONS_1:
         func = FUNCTIONS_1[wtok.get_current()]
