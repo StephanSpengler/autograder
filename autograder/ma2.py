@@ -1,6 +1,6 @@
 import sys
 from exam_grader import init, Task
-from test_utilities import run_function_tests, expect_output_func, expect_output_all
+from test_utilities import run_function_tests, expect_output_func
 
 # 
 # BST implementation
@@ -102,10 +102,7 @@ def test_A4(module):
         ("Sorted", sorted100),
         ("Shuffled", shuffled),
     ]
-    def get_label(name, values):
-        label = name + " " + str(values)
-        return (label[:100] + '..') if len(label) > 100 else label
-    return run_function_tests(module, "BST", [expect_output_func(get_label(name, values), lambda func, values=values: BST_tester(func, values), None if len(values) == 0 else min(values)) for name, values in tests])
+    return run_function_tests(module, "BST", [expect_output_func(name + " " + str(values), lambda func, values=values: BST_tester(func, values), None if len(values) == 0 else min(values)) for name, values in tests])
 
 def test_B2(module):
     def LL_tester(LinkedList, values):

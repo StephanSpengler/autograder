@@ -41,26 +41,14 @@ def run_function_tests(module, func_name, tests):
 # Test utility functions
 # 
 
-def expect_output_all(tests):
-    return list(map(lambda t: expect_output(t[0], t[1], *t[2:]), tests))
-
-def expect_output(name, expected, *params):
+def expect_output_param(name, param, expected):
     """
-    Create a test callable that calls the function with *params*
+    Create a test callable that calls the function with `param`
     and compares the result to expected.
 
     Returns a callable(func) -> None | error_message
     """
-    def run_test(func):
-        try:
-            result = func(*params)
-        except Exception as e:
-            return f"Test '{name}' raised an exception: {e}"
-
-        if result != expected:
-            return f"Test '{name}' failed: expected {expected}, got {result} (params={params})"
-        return None
-    return run_test
+    return expect_output_func(name, lambda f: f(param), expected)
 
 def expect_output_func(name, tester, expected):
     """
@@ -69,6 +57,8 @@ def expect_output_func(name, tester, expected):
 
     Returns a callable(func) -> None | error_message
     """
+    if len(name) > 100:
+        name = name[:100] + '..'
     def run_test(func):
         try:
             result = tester(func)
