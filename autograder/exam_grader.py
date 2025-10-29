@@ -1,6 +1,7 @@
 import csv
 import importlib.util
 import os
+import sys
 import subprocess
 import tkinter as tk
 from tkinter import messagebox, simpledialog
@@ -64,6 +65,7 @@ def _import_submission(file_path):
     if spec is None:
         raise ImportError(f"Could not load spec from {file_path}")
     module = importlib.util.module_from_spec(spec)
+    sys.modules["student"] = module
     loader = spec.loader
     if loader is None:
         raise ImportError(f"No loader for spec from {file_path}")
@@ -76,7 +78,7 @@ def _truncate(text):
     s = str(text)
     lines = s.splitlines()
     max_chars = 200
-    max_lines = 10 if len(lines) > 12 else 12
+    max_lines = 10 if len(lines) > 15 else 15
     out = []
     for line in lines[:max_lines]:
         if len(line) > max_chars:
@@ -84,7 +86,13 @@ def _truncate(text):
         else:
             out.append(line)
     if len(lines) > max_lines:
-        out.append(f"... ({len(lines) - max_lines} more lines)")
+        out.append(f"... ({len(lines) - max_lines - 1} more lines) ...")
+        line = lines[-1]
+        if len(line) > max_chars:
+            out.append(line[: max_chars - 3] + "...")
+        else:
+            out.append(line)
+
     return "\n".join(out)
 
 def _load_student(i, student, submissions_root, submission_file, tasks, scores, onSave, load):
