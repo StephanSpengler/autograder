@@ -1,4 +1,4 @@
-from functools import reduce
+rom functools import reduce
 import concurrent.futures as future
 import numpy as np
 

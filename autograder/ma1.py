@@ -1,6 +1,6 @@
 import sys
 from exam_grader import init, Task
-from test_utilities import run_function_tests, is_recursive_test, expect_output_param
+from test_utilities import run_function_tests, is_recursive_test, expect_output_param, presetA, presetB
 
 #
 # Tests
@@ -58,9 +58,9 @@ if __name__ == "__main__":
     output_path = "m1.csv"
     submission_file = "m1.py"
     tasks: list[Task] = [
-        ("A1", test_A1, [0.0, 0.2, 0.5, 0.8, 1.0]),
-        ("A2", test_A2, [0.0, 0.2, 0.5, 0.8, 1.0]),
-        ("B1", test_B1, [0.0, 0.5, 1.0, 1.5, 2.0]),
+        ("A1", test_A1, presetA),
+        ("A2", test_A2, presetA),
+        ("B1", test_B1, presetB),
     ]
 
     init(submissions_root, output_path, submission_file, tasks)

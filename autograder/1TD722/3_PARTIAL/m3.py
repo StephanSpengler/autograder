@@ -16,11 +16,7 @@ def Estimation(lst): ##Exercise A6
     results = [f.result() for f in future.as_completed(futures)]
     minmin = min(r[0] for r in results)
     maxmax = max(r[1] for r in results)
-    l = n / (n-1)
-    u = 1 / (n-1)
-    a = l * minmin - u * maxmax
-    b = l * maxmax - u * minmin
-    return (a, b)
+    return (minmin, maxmax)
 def EstimationSeq(l):
     return (min(l), max(l))
 def main():

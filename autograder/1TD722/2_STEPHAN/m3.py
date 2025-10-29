@@ -3,7 +3,11 @@ import concurrent.futures as future
 import numpy as np
 
 def A5(zip_exam): ##Exercise A5
-    return [name for (name, grade) in zip_exam if grade == 5]
+    out = []
+    for name, grade in zip_exam:
+        if grade == 5:
+            out.append(name)
+    return out
 def generate_list(n):
     a = np.random.randint(0,9)
     b = np.random.randint(10, 19)
@@ -14,8 +18,9 @@ def Estimation(lst): ##Exercise A6
     with future.ProcessPoolExecutor() as executor:
         futures = [executor.submit(EstimationSeq, lst[i::n_p]) for i in range(n_p)]
     results = [f.result() for f in future.as_completed(futures)]
-    minmin = min(r[0] for r in results)
-    maxmax = max(r[1] for r in results)
+    import statistics
+    minmin = statistics.mean(r[0] for r in results)
+    maxmax = statistics.mean(r[1] for r in results)
     l = n / (n-1)
     u = 1 / (n-1)
     a = l * minmin - u * maxmax

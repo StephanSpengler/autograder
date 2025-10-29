@@ -1,4 +1,4 @@
-class Queue:
+lass Queue:
 
     class Node:
         def __init__(self, data, succ=None):

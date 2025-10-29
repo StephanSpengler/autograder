@@ -1,6 +1,6 @@
 import sys
 from exam_grader import init, Task
-from test_utilities import run_function_tests, expect_output_func
+from test_utilities import run_function_tests, expect_output_func, presetA, presetB
 
 # 
 # BST implementation
@@ -129,7 +129,7 @@ def test_B2(module):
         ("Sorted", sorted100),
         ("Shuffled", shuffled),
     ]
-    return run_function_tests(module, "LinkedList", [expect_output_func(name, lambda func, values=values: LL_tester(func, values), None if len(values) == 0 else sorted(values)[len(values)//2]) for name, values in tests])
+    return run_function_tests(module, "LinkedList", [expect_output_func(name + " " + str(values), lambda func, values=values: LL_tester(func, values), None if len(values) == 0 else sorted(values)[len(values)//2]) for name, values in tests])
 
 def test_B3(module):
     def BST_tester(BST, values):
@@ -167,10 +167,10 @@ if __name__ == "__main__":
     output_path = "m2.csv"
     submission_file = "m2.py"
     tasks: list[Task] = [
-        ("A3", test_A3, [0.0, 0.2, 0.5, 0.8, 1.0]),
-        ("A4", test_A4, [0.0, 0.2, 0.5, 0.8, 1.0]),
-        ("B2", test_B2, [0.0, 0.5, 1.0, 1.5, 2.0]),
-        ("B3", test_B3, [0.0, 0.5, 1.0, 1.5, 2.0]),
+        ("A3", test_A3, presetA),
+        ("A4", test_A4, presetA),
+        ("B2", test_B2, presetB),
+        ("B3", test_B3, presetB),
     ]
 
     init(submissions_root, output_path, submission_file, tasks)

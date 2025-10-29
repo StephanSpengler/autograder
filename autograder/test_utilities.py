@@ -2,6 +2,13 @@ import ast
 import inspect
 
 #
+# Grading presets
+#
+
+presetA = [0.0, 0.2, 0.5, 0.8, 1.0]
+presetB = [0.0, 0.5, 1.0, 1.5, 2.0]
+
+#
 # Main test runner
 # 
 
@@ -57,16 +64,14 @@ def expect_output_func(name, tester, expected):
 
     Returns a callable(func) -> None | error_message
     """
-    if len(name) > 100:
-        name = name[:100] + '..'
     def run_test(func):
         try:
             result = tester(func)
         except Exception as e:
-            return f"Test '{name}' raised an exception: {e}"
+            return f"Test '{truncate100(name)}' raised an exception: {e}"
 
         if result != expected:
-            return f"Test '{name}' failed: expected {expected}, got {result}"
+            return f"Test '{truncate100(name)}' failed: expected {truncate100(str(expected))}, got {truncate100(str(result))}"
         return None
     return run_test
 
@@ -158,3 +163,13 @@ def uses_HOF_test(count=1):
             return f"Test 'HOF_check' failed: expected at least {count} higher-order usage(s), found {hof_count}"
 
     return test
+
+#
+# Helper functions
+#
+
+def truncate100(text):
+    """
+    Truncate text to 100 characters for display.
+    """
+    return text if len(text) <= 100 else text[:100] + '...'
