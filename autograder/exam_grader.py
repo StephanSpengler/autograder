@@ -83,13 +83,15 @@ def _load_student(i, student, submissions_root, submission_file, tasks, scores, 
 
         # Run tests
         try:
-            results = {}
             module = _import_submission(file_path)
+            results = {}
             for task_id, task_test, _ in tasks:
-                results[task_id] = task_test(module)
+                try:
+                    results[task_id] = task_test(module)
+                except Exception as e:
+                    results[task_id] = f"Error during testing: {e}"
             status = "Tests completed."
         except Exception as e:
-            results = None
             status = f"Error loading submission for student {student}: {e}"
 
     # Open grading window        
