@@ -9,16 +9,7 @@ def generate_list(n):
     b = np.random.randint(10, 19)
     return np.random.uniform(a,b,n)
 def Estimation(lst): ##Exercise A6
-    n = len(lst)
-    n_p = 4
-    with future.ProcessPoolExecutor() as executor:
-        futures = [executor.submit(EstimationSeq, lst[i::n_p]) for i in range(n_p)]
-    results = [f.result() for f in future.as_completed(futures)]
-    minmin = min(r[0] for r in results)
-    maxmax = max(r[1] for r in results)
-    return (minmin, maxmax)
-def EstimationSeq(l):
-    return (min(l), max(l))
+    return (min(lst), max(lst))
 def main():
 
     print("Test A5:")
