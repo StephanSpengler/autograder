@@ -70,6 +70,22 @@ def _import_submission(file_path):
     loader.exec_module(module)
     return module
 
+def _truncate(text):
+    if text is None:
+        return ""
+    s = str(text)
+    lines = s.splitlines()
+    max_chars = 200
+    max_lines = 10 if len(lines) > 12 else 12
+    out = []
+    for line in lines[:max_lines]:
+        if len(line) > max_chars:
+            out.append(line[: max_chars - 3] + "...")
+        else:
+            out.append(line)
+    if len(lines) > max_lines:
+        out.append(f"... ({len(lines) - max_lines} more lines)")
+    return "\n".join(out)
 
 def _load_student(i, student, submissions_root, submission_file, tasks, scores, onSave, load):
     # Load submission
@@ -125,7 +141,7 @@ def _load_student(i, student, submissions_root, submission_file, tasks, scores, 
     box = tk.Frame(frame)
     box.pack(fill="x", pady=2)
     for (row_id, (task_id, _, grading_scheme)) in enumerate(tasks):
-        tk.Label(box, text=f"{task_id}: {results[task_id] if results != None else status}", anchor="w", justify="left").grid(row=row_id, column=0, sticky="w")
+        tk.Label(box, text=f"{task_id}: {_truncate(results[task_id] if results != None else status)}", anchor="w", justify="left").grid(row=row_id, column=0, sticky="w")
         var = tk.StringVar()
         var.set(scores.get(task_id, ""))
         entry = tk.Entry(box, width=5, textvariable=var)
