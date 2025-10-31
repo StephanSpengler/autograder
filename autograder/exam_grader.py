@@ -173,8 +173,8 @@ def _load_student(i, student, submissions_root, submission_file, tasks, scores, 
         load(target_index)
 
     tk.Button(btns, text="Prev", command=lambda: _navigate_and_maybe_save(i-1)).pack(side="left", padx=5)
-    tk.Button(btns, text="Save", command=save).pack(side="left", padx=5)
     tk.Button(btns, text="Reload", command=lambda: _navigate_and_maybe_save(i)).pack(side="left", padx=5)
+    tk.Button(btns, text="Save", command=save).pack(side="left", padx=5)
     tk.Button(btns, text="Next", command=lambda: _navigate_and_maybe_save(i+1)).pack(side="left", padx=5)
     tk.Button(btns, text="Skip to...", command=lambda: _navigate_and_maybe_save()).pack(side="left", padx=5)
     root.mainloop()
