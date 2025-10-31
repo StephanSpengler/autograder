@@ -16,11 +16,12 @@ def load_func(module, func_name):
         raise AttributeError(f"Function '{func_name}' is not defined.")
     return getattr(module, func_name)
 
-def truncate100(text):
+def truncate(text, max_len=100):
     """
-    Truncate text to 100 characters for display.
+    Truncate text to max_len characters for display.
     """
-    return text if len(text) <= 100 else text[:100] + '...'
+    text = str(text)
+    return text if len(text) <= max_len else text[:max_len] + '...'
 
 def collect_failed(failed):
     if not failed:
@@ -86,10 +87,15 @@ def expect_output_func(name, tester, expected):
         try:
             result = tester(func)
         except Exception as e:
-            return f"Test '{truncate100(name)}' raised an exception: {e}"
+            return f"Test '{truncate(name)}' raised an exception: {e}"
 
         if result != expected:
-            return f"Test '{truncate100(name)}' failed: expected {truncate100(str(expected))}, got {truncate100(str(result))}"
+            if str(expected) == str(result):
+                return f"Test '{truncate(name)}' failed: values differ (only) in type. Expected type {type(expected).__name__}, got type {type(result).__name__}."
+            elif len(str(expected)) + len(str(result)) > 200:
+                return f"Test '{truncate(name, 200)}' failed:\nexp:\t{truncate(expected, 200)}\ngot:\t{truncate(result, 200)}"
+            else:
+                return f"Test '{truncate(name)}' failed: expected {expected}, got {result}"
         return None
     return run_test
 
