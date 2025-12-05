@@ -147,6 +147,10 @@ init(submissions_root, output_path, submission_file, tasks)
 - If a student's file fails to import: the GUI will show the import error. Inspect the file in your editor and fix syntax/runtime issues in the student's code before grading.
 - If a CSV is not updated: ensure the grader process has write permission to the `autograder/` directory.
 
-## License & contact
+## License
 
-This software is intended for teaching and internal use. If you need help modifying the grader, open an issue or contact the course staff.
+This software is licensed under the GNU General Public License version 3.
+
+## Contact
+
+If you need help modifying the grader, open an issue on GitHub or [contact me](https://www.uu.se/en/contact-and-organisation/staff?query=N22-489) directly.
