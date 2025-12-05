@@ -23,17 +23,11 @@ def truncate(text, max_len=100):
     text = str(text)
     return text if len(text) <= max_len else text[:max_len] + '...'
 
-def collect_failed(failed):
-    if not failed:
-        return "All tests passed."
-
-    messages = []
-    for i, msg in enumerate(failed):
-        if i > 10:
-            messages.append(f"... and {len(failed) - 10} more failures.")
-            break
-        messages.append(msg)
-    return "\n".join(messages)
+def collect_failed(failed, tests):
+    if len(failed) == 0:
+        return f"All {len(tests)} tests passed."
+    status = f"{len(tests) - len(failed)} out of {len(tests)} tests passed. Failures:"
+    return "\n".join([status] + failed)
 
 #
 # Main test runner
@@ -61,7 +55,7 @@ def run_function_tests(module, func_name, tests):
         if msg is not None:
             failed.append(msg)
     
-    return collect_failed(failed)
+    return collect_failed(failed, tests)
 
 #
 # Test utility functions

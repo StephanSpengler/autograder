@@ -78,21 +78,12 @@ def _truncate(text):
     s = str(text)
     lines = s.splitlines()
     max_chars = 200
-    max_lines = 10 if len(lines) > 15 else 15
     out = []
-    for line in lines[:max_lines]:
+    for line in lines:
         if len(line) > max_chars:
             out.append(line[: max_chars - 3] + "...")
         else:
             out.append(line)
-    if len(lines) > max_lines:
-        out.append(f"... ({len(lines) - max_lines - 1} more lines) ...")
-        line = lines[-1]
-        if len(line) > max_chars:
-            out.append(line[: max_chars - 3] + "...")
-        else:
-            out.append(line)
-
     return "\n".join(out)
 
 def _load_student(i, student, submissions_root, submission_file, tasks, scores, onSave, load):
@@ -100,7 +91,7 @@ def _load_student(i, student, submissions_root, submission_file, tasks, scores, 
     file_path = os.path.join(submissions_root, student, submission_file)
     results = None
     if not os.path.exists(file_path):
-        status = f"Submission file not found for student {student}."
+        status = f"Submission file not found."
     else:
         # Open submission in default editor
         _open_file(file_path)
@@ -116,11 +107,11 @@ def _load_student(i, student, submissions_root, submission_file, tasks, scores, 
                     results[task_id] = f"Error during testing: {e}"
             status = "Tests completed."
         except Exception as e:
-            status = f"Error loading submission for student {student}: {e}"
+            status = f"Error loading submission: {e}"
 
     # Open grading window        
     root = tk.Tk()
-    tk.Label(root, text=f"Grading {student}", font=("Arial", 14, "bold")).pack()
+    tk.Label(root, text=f"Grading: {student}", font=("Arial", 14, "bold")).pack()
     frame = tk.Frame(root)
     frame.pack(pady=10)
 
@@ -149,16 +140,48 @@ def _load_student(i, student, submissions_root, submission_file, tasks, scores, 
     box = tk.Frame(frame)
     box.pack(fill="x", pady=2)
     for (row_id, (task_id, _, grading_scheme)) in enumerate(tasks):
-        tk.Label(box, text=f"{task_id}: {_truncate(results[task_id] if results != None else status)}", anchor="w", justify="left").grid(row=row_id, column=0, sticky="w")
+        # Frame around each task for visual separation
+        task_frame = tk.Frame(box, bd=1, relief="solid", padx=6, pady=6)
+        task_frame.pack(fill="x", pady=6)
+
+        # Header: task name, score entry and preset buttons
+        header = tk.Frame(task_frame)
+        header.pack(fill="x")
+        tk.Label(header, text=task_id, font=("Arial", 11, "bold")).pack(side="left", anchor="w")
+
         var = tk.StringVar()
         var.set(scores.get(task_id, ""))
-        entry = tk.Entry(box, width=5, textvariable=var)
-        entry.grid(row=row_id, column=1, sticky="w", padx=5)
-        var.trace_add("write", lambda *_, e = entry, tid=task_id, v=var: _set_score(tid, v.get(), e))
+        entry = tk.Entry(header, width=6, textvariable=var)
+        entry.pack(side="left", padx=8)
+        var.trace_add("write", lambda *_, e=entry, tid=task_id, v=var: _set_score(tid, v.get(), e))
 
-        for (col_id, val) in enumerate(grading_scheme):
-            b = tk.Button(box, text=str(val), command=lambda *_, vl=val, vr = var: vr.set(vl))
-            b.grid(row=row_id, column=2 + col_id, sticky="w", padx=2)
+        for val in grading_scheme:
+            b = tk.Button(header, text=str(val), command=lambda vl=val, vr=var: vr.set(vl))
+            b.pack(side="left", padx=3)
+
+        # Test output shown below the header
+        output_text = _truncate(results[task_id] if results is not None else status)
+        line_count = len(output_text.splitlines())
+        
+        if line_count > 10:
+            # Use scrollable Text widget for long output
+            text_frame = tk.Frame(task_frame)
+            text_frame.pack(fill="both", expand=True, pady=(8, 0))
+            
+            scrollbar = tk.Scrollbar(text_frame)
+            scrollbar.pack(side="right", fill="y")
+            
+            text_widget = tk.Text(text_frame, height=8, wrap="word", yscrollcommand=scrollbar.set, bg="lightgray")
+            text_widget.insert("1.0", output_text)
+            text_widget.config(state="disabled")
+            text_widget.pack(side="left", fill="both", expand=True)
+            text_widget.configure(font=("Arial", 11))
+            
+            scrollbar.config(command=text_widget.yview)
+        else:
+            # Use simple Label for short output
+            out_label = tk.Label(task_frame, text=output_text, anchor="w", justify="left", wraplength=900)
+            out_label.pack(fill="x", pady=(8, 0))
     
     btns = tk.Frame(root)
     btns.pack(pady=10)

@@ -76,7 +76,7 @@ bob,0.5,0.0,
 - `presetA`, `presetB` — common grading presets used by the runners.
 - `load_func(module, func_name)` — get a function object from a module or raise an AttributeError.
 - `truncate100(text)` — helper to shorten long messages for display.
-- `collect_failed(failed)` — helper that turns a list of failure messages into a single text block (or "All tests passed.").
+- `collect_failed(failed, tests)` — helper that turns a list of failure messages into a single text block (or "All tests passed.").
 - `run_function_tests(module, func_name, tests)` — wrapper for testing functions inside a student module:
 	- looks up `func_name` in `module` (raises/explains if missing),
 	- calls each test in `tests`, passing the extracted function as the single argument,

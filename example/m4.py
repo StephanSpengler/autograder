@@ -43,7 +43,7 @@ def test_calculator(module, tests):
     if error is not None:
         failed.append(f"Test raised an unexpected exception: {error}")
     
-    return collect_failed(failed)
+    return collect_failed(failed, tests)
 
 def test_A7(module):
     return test_calculator(module, [
@@ -137,7 +137,7 @@ def test_B4(module):
     if error is not None:
         failed.append(f"Test raised an unexpected exception: {error}")
         
-    return collect_failed(failed) + "\n" + test_calculator(module, [
+    return collect_failed(failed, []) + "\n" + test_calculator(module, [
         ("age", "*** Syntax error:"), # messsage may vary
         ("age(", "*** Syntax error:"), # messsage may vary
         ("age(5)", "*** Syntax error:"), # messsage may vary
