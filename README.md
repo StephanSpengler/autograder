@@ -6,8 +6,8 @@ It runs automated tests on student submission files, opens the submission in the
 ## Contents
 
 - `exam_grader.py` - Main interactive grader UI and orchestration.
-- `ma1.py` - Example grader runner for assignment MA1. Defines tasks, test functions and grading schema.
 - `test_utilities.py` - Helper test functions used by assignment runners (simple test harness, comparators, recursion checks, HOF checks).
+- `example/` - Example assignment runners for the 2025 1TD722 exam. Defines tasks, test functions and grading schema.
 
 ## Requirements
 
@@ -16,7 +16,7 @@ It runs automated tests on student submission files, opens the submission in the
 
 ## Quick start
 
-1. Prepare a submissions directory where each student has a subdirectory named by their student id or username. Each student's folder should contain the expected submission file (for MA1 the file name is `ma1.py`). Example layout:
+1. Prepare a submissions directory where each student has a subdirectory named by their student id or username. Each student's folder should contain the expected submission file. Example layout:
 
 ```
 submissions/
@@ -35,8 +35,9 @@ submissions/
 2. Run the assignment runner from this `autograder` directory.
 
 ```bash
-python3 ma1.py /path/to/submissions    # run grader for assignment 1 -> m1.csv
-python3 ma2.py /path/to/submissions    # run grader for assignment 2 -> m2.csv
+python3 -m example.m1 example/submissions	# run grader for assignment 1 -> m1.csv
+python3 -m example.m2 example/submissions	# run grader for assignment 2 -> m2.csv
+...
 ```
 
 3. Each runner writes a CSV (`m1.csv`, `m2.csv`, ...) containing `student` plus one column per task defined in the runner. While grading the GUI will:
@@ -62,7 +63,7 @@ bob,0.5,0.0,
 
 ## How the grader works (developer notes)
 
-- Assignment runners (like `ma1.py`..`ma4.py`) define a `tasks` list with tuples: (`task_id`, `test_function`, `grading_scheme`).
+- Assignment runners (like `m1.py`..`m4.py`) define a `tasks` list with tuples: (`task_id`, `test_function`, `grading_scheme`).
 	- `task_id` — short string shown in GUI (e.g. `A1`).
 	- `test_function` — callable(module) -> str: accepts the imported student module and returns a human-readable string summarizing tests for that task. This string is displayed in the GUI.
 	- `grading_scheme` — list of numeric values used to populate quick-score buttons.
@@ -85,13 +86,13 @@ bob,0.5,0.0,
 - `uses_HOF_test(count=1)` — returns a test that inspects source code and ensures higher-order constructs (map/filter/lambda/comprehensions/generator expressions) are used at least `count` times.
 - `is_recursive_test(expected=True)` — checks whether a function uses direct recursion (inspect & AST).
 
-The provided runners (`ma1`..`ma4`) demonstrate these helpers in action. Each runner defines tasks for its assignment and writes `mX.csv` where `X` is the assignment number.
+The provided runners (`m1`..`m4`) demonstrate these helpers in action. Each runner defines tasks for its assignment and writes `mX.csv` where `X` is the assignment number.
 
 ## Adding a new assignment runner
 
 Follow these steps to add a new grader for an assignment:
 
-1. Copy an existing runner (e.g. `ma1.py`) to `maN.py` and edit the bottom of the file.
+1. Copy an existing runner (e.g. `m1.py`) to `mN.py` and edit the bottom of the file.
 2. Update the runner configuration:
 	 - `submission_file` — the filename expected in each student folder (e.g. `m5.py`).
 	 - `output_path` — the CSV file to write (e.g. `m5.csv`).
@@ -137,7 +138,7 @@ init(submissions_root, output_path, submission_file, tasks)
 
 ## Notes on the supplied runners
 
-- The repo currently includes `ma1.py`..`ma4.py` covering the course exercises. Each runner demonstrates a mix of functional tests, performance checks, structural (AST) checks and I/O interaction tests.
+- The repo currently includes `m1.py`..`m4.py` covering the course exercises. Each runner demonstrates a mix of functional tests, performance checks, structural (AST) checks and I/O interaction tests.
 
 ## Troubleshooting
 

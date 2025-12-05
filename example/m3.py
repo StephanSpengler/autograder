@@ -1,6 +1,6 @@
 import sys
-from exam_grader import init, Task
-from test_utilities import uses_HOF_test, run_function_tests, expect_output_param, presetA, presetB
+from library.exam_grader import init, Task
+from library.test_utilities import uses_HOF_test, run_function_tests, expect_output_param, presetA, presetB
 
 #
 # Tests

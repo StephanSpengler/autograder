@@ -1,6 +1,6 @@
 import sys
-from exam_grader import init, Task
-from test_utilities import collect_failed, presetA, presetB
+from library.exam_grader import init, Task
+from library.test_utilities import collect_failed, presetA, presetB
 
 #
 # Tests

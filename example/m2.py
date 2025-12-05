@@ -1,6 +1,6 @@
 import sys
-from exam_grader import init, Task
-from test_utilities import run_function_tests, expect_output_func, presetA, presetB
+from library.exam_grader import init, Task
+from library.test_utilities import run_function_tests, expect_output_func, presetA, presetB
 
 # 
 # BST implementation
@@ -67,12 +67,20 @@ def test_A3(module):
         for x in values:
             q.Enqueue(x)
 
-        out = ""
-        for _ in range(len(values)):
+        out = []
+        for _ in range(max(1, len(values))): # at least one dequeue
             q.Dequeue()
-            out += str(q) + "\n"
-        return out.strip()
+            out.append(str(q))
+        return ", ".join(out)
 
+    def queue_length_tester(Queue, values):
+        q = Queue()
+        for x in values:
+            q.Enqueue(x)
+        for _ in values:
+            q.Dequeue()
+        return len([x for x in q])
+    
     tests = [
         ("Empty", []),
         ("Single", ["X"]),
@@ -80,8 +88,8 @@ def test_A3(module):
         ("Duplicates", ["H", "e", "l", "l", "o"]),
     ]
     def dequeue_all(a):
-        return "\n".join("(" + ", ".join(str(x) for x in a[start+1:]) + ")" for start in range(len(a)))
-    return run_function_tests(module, "Queue", [expect_output_func(name + " " + str(values), lambda func, values=values: queue_tester(func, values), dequeue_all(values)) for name, values in tests])
+        return "()" if len(a) == 0 else ", ".join("(" + ", ".join(str(x) for x in a[start+1:]) + ")" for start in range(len(a)))
+    return run_function_tests(module, "Queue", [expect_output_func(name + " " + str(values), lambda func, values=values: queue_tester(func, values), dequeue_all(values)) for name, values in tests] + [expect_output_func("Length", lambda func: queue_length_tester(func, ["A", "B", "C", "D", "E"]), 0)])
 
 import random
 def test_A4(module):
@@ -111,6 +119,14 @@ def test_B2(module):
             ll.insert(x)
         return ll.middle()
 
+    ### NOT ENOUGH, does not work if list is destroyed from both ends
+    def LL_destroy_test(LinkedList, values):
+        ll = LinkedList()
+        for x in values:
+            ll.insert(x)
+        _ = ll.middle() # should not change the list
+        return ll.middle()
+
     sorted100 = list(range(100))
     shuffled = sorted100[:]
     random.shuffle(shuffled)
@@ -129,16 +145,16 @@ def test_B2(module):
         ("Sorted", sorted100),
         ("Shuffled", shuffled),
     ]
-    return run_function_tests(module, "LinkedList", [expect_output_func(name + " " + str(values), lambda func, values=values: LL_tester(func, values), None if len(values) == 0 else sorted(values)[len(values)//2]) for name, values in tests])
+    return run_function_tests(module, "LinkedList", [expect_output_func(name + " " + str(values), lambda func, values=values: LL_tester(func, values), None if len(values) == 0 else sorted(values)[len(values)//2]) for name, values in tests] + [expect_output_func("Destroy", lambda func: LL_destroy_test(func, shuffled), 50)])
 
 def test_B3(module):
     def BST_tester(BST, values):
-        out = ""
+        out = []
         bst = BST()
         for x in values:
             bst.insert(x)
-            out += repr(bst) + "\n"
-        return out.strip()
+            out.append(repr(bst))
+        return ", ".join(out)
 
     sorted100 = list(range(100))
     shuffled = sorted100[:]
@@ -167,10 +183,11 @@ if __name__ == "__main__":
     output_path = "m2.csv"
     submission_file = "m2.py"
     tasks: list[Task] = [
+        # for convenience, use order in which they appear in the submission file
         ("A3", test_A3, presetA),
+        ("B3", test_B3, presetB),
         ("A4", test_A4, presetA),
         ("B2", test_B2, presetB),
-        ("B3", test_B3, presetB),
     ]
 
     init(submissions_root, output_path, submission_file, tasks)
